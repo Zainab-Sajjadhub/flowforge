@@ -1,0 +1,24 @@
+{
+  "meetings": [],
+  "last_calendar_poll": "2026-05-18T23:13:19.313692+00:00",
+  "active_bots": {
+    "20lprqs90bsniu3ejpok65ldcu": {
+      "bot_id": "c649d07a-817c-48e5-89c2-9da1f8699a7c",
+      "meeting_id": "20lprqs90bsniu3ejpok65ldcu",
+      "meeting_title": "sw team lead meeting",
+      "meeting_start": "2026-05-19T06:00:00-04:00",
+      "attendees": [],
+      "status": "joining",
+      "armed_at": "2026-05-18T22:04:18.619762+00:00"
+    },
+    "16fkl9du8cjom282jue8fbldat": {
+      "bot_id": "e1a47969-d16a-494a-9b03-ddf818311960",
+      "meeting_id": "16fkl9du8cjom282jue8fbldat",
+      "meeting_title": "test meeting",
+      "meeting_start": "2026-05-18T18:15:00-04:00",
+      "attendees": [],
+      "status": "joining",
+      "armed_at": "2026-05-18T22:15:17.915182+00:00"
+    }
+  }
+}

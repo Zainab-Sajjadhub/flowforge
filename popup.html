@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foundry Meeting Intelligence</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <div class="logo-mark">F</div>
+        <div class="logo-text">
+          <span class="logo-title">The Foundry</span>
+          <span class="logo-sub">Meeting Intelligence</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-refresh" class="icon-btn" title="Refresh calendar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </button>
+        <button id="btn-auth" class="icon-btn" title="Sign in with Google" style="display:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Tab nav -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="meetings">Upcoming</button>
+      <button class="tab" data-tab="active">Live</button>
+      <button class="tab" data-tab="summaries">Summaries</button>
+    </nav>
+
+    <!-- Tab: Upcoming Meetings -->
+    <div id="tab-meetings" class="tab-content active">
+      <div id="meetings-list">
+        <div class="empty-state">
+          <div class="empty-icon">📅</div>
+          <p>Sign in to load your meetings</p>
+          <button class="btn-primary" id="btn-signin">Connect Google Calendar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Live / Active bots -->
+    <div id="tab-active" class="tab-content">
+      <div id="active-bots-list">
+        <div class="empty-state">
+          <div class="empty-icon">🤖</div>
+          <p>No active bots right now</p>
+          <span class="empty-hint">Arm a bot from the Upcoming tab</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Summaries -->
+    <div id="tab-summaries" class="tab-content">
+      <div id="summaries-list">
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <p>No summaries yet</p>
+          <span class="empty-hint">Summaries appear after meetings end</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Detail Modal -->
+    <div id="modal-overlay" class="hidden">
+      <div id="modal">
+        <div class="modal-header">
+          <div>
+            <div id="modal-title" class="modal-title"></div>
+            <div id="modal-date" class="modal-date"></div>
+          </div>
+          <button id="modal-close" class="icon-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div id="modal-body"></div>
+        <div class="modal-footer">
+          <button id="btn-post-slack" class="btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22.08 9C19.56 1.96 11.81-1.07 4.77 1.46S-1.07 12.19 1.46 19.23 12.19 25.07 19.23 22.54 25.07 14.81 22.08 9z"/><path d="M14.31 14.31L9.69 9.69M14.31 9.69L9.69 14.31"/></svg>
+            Post to Slack
+          </button>
+          <button id="btn-copy-summary" class="btn-secondary">Copy Summary</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
