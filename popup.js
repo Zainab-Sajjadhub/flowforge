@@ -64,7 +64,6 @@ function renderMeetings(meetings, activeBots) {
   if (!meetings.length) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-icon">📅</div>
         <p>No upcoming meetings with video links found</p>
         <button class="btn-primary" id="btn-signin">Connect Google Calendar</button>
         <span class="empty-hint">Or meetings may not have Google Meet links</span>
@@ -120,7 +119,7 @@ function renderMeetings(meetings, activeBots) {
       </div>
       <div class="meeting-card-actions">
         <button class="btn-arm" data-id="${meeting.id}" ${isArmed ? "disabled" : ""}>
-          ${isArmed ? "🤖 Bot Armed" : "⚡ Arm Bot"}
+          ${isArmed ? "Notetaker Added" : "Add Notetaker"}
         </button>
         ${meeting.meetLink ? `<a href="${meeting.meetLink}" target="_blank" class="btn-join">Join ↗</a>` : ""}
       </div>`;
@@ -131,12 +130,12 @@ function renderMeetings(meetings, activeBots) {
       btn.innerHTML = `<span class="spinner"></span> Arming…`;
       const res = await chrome.runtime.sendMessage({ type: "ARM_BOT", meeting });
       if (res.ok) {
-        btn.innerHTML = "🤖 Bot Armed";
-        toast("Bot joining " + meeting.title, "success");
+        btn.innerHTML = "Notetaker Added";
+        toast("Notetaker added to " + meeting.title, "success");
         await loadAll();
       } else {
         btn.disabled = false;
-        btn.innerHTML = "⚡ Arm Bot";
+        btn.innerHTML = "Add Notetaker";
         toast("Error: " + res.error, "error");
       }
     });
@@ -153,7 +152,6 @@ function renderActiveBots(activeBots) {
   if (!active.length) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-icon">🤖</div>
         <p>No active bots right now</p>
         <span class="empty-hint">Arm a bot from the Upcoming tab</span>
       </div>`;
@@ -161,7 +159,7 @@ function renderActiveBots(activeBots) {
   }
 
   container.innerHTML = "";
-  active.forEach(([id, bot]) => {
+  active.forEach(([, bot]) => {
     const statusLabel = {
       joining: "Joining meeting…",
       in_call_not_recording: "In call, waiting to record",
@@ -193,7 +191,6 @@ function renderSummaries(summaries) {
   if (!entries.length) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-icon">📋</div>
         <p>No summaries yet</p>
         <span class="empty-hint">Summaries appear after meetings end</span>
       </div>`;
@@ -208,7 +205,7 @@ function renderSummaries(summaries) {
       <div class="summary-card-title">${escHtml(s.meetingTitle)}</div>
       <div class="summary-card-meta">${formatDateFull(new Date(s.meetingStart))} · ${s.attendance?.length || 0} attendees</div>
       <div class="summary-card-preview">${escHtml(s.summary || "")}</div>
-      ${s.actionItems?.length ? `<div class="action-count">⚡ ${s.actionItems.length} action items</div>` : ""}`;
+      ${s.actionItems?.length ? `<div class="action-count">${s.actionItems.length} action items</div>` : ""}`;
 
     card.addEventListener("click", () => openSummaryModal(id, s));
     container.appendChild(card);
@@ -248,9 +245,9 @@ function openSummaryModal(id, summary) {
           <div class="action-body">
             <div class="action-task">${escHtml(item.task)}</div>
             <div class="action-meta">
-              <span>👤 ${escHtml(item.owner)}</span>
-              <span>📅 ${escHtml(item.deadline)}</span>
-              <span class="priority-${item.priority}">● ${item.priority}</span>
+              <span>${escHtml(item.owner)}</span>
+              <span>${escHtml(item.deadline)}</span>
+              <span class="priority-${item.priority}">${item.priority}</span>
             </div>
           </div>
         </div>`
@@ -262,7 +259,7 @@ function openSummaryModal(id, summary) {
   // Key Decisions
   if (summary.keyDecisions?.length) {
     const decisionsHtml = summary.keyDecisions
-      .map((d) => `<div class="pill">✓ ${escHtml(d)}</div>`)
+      .map((d) => `<div class="pill">${escHtml(d)}</div>`)
       .join("");
     appendSection(body, "Key Decisions", decisionsHtml);
   }
@@ -282,7 +279,7 @@ function openSummaryModal(id, summary) {
   // Blockers
   if (summary.blockers?.length) {
     const blockersHtml = summary.blockers
-      .map((b) => `<div class="pill" style="border-color:var(--accent);color:var(--accent)">⚠ ${escHtml(b)}</div>`)
+      .map((b) => `<div class="pill" style="border-color:var(--accent);color:var(--accent)">${escHtml(b)}</div>`)
       .join("");
     appendSection(body, "Blockers / Risks", blockersHtml);
   }
@@ -318,7 +315,7 @@ async function postToSlack() {
   btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22.08 9C19.56 1.96 11.81-1.07 4.77 1.46S-1.07 12.19 1.46 19.23 12.19 25.07 19.23 22.54 25.07 14.81 22.08 9z"/><path d="M14.31 14.31L9.69 9.69M14.31 9.69L9.69 14.31"/></svg> Post to Slack`;
 
   if (res.ok) {
-    toast("Posted to Slack ✓", "success");
+    toast("Posted to Slack", "success");
   } else {
     toast("Slack error: " + res.error, "error");
   }
