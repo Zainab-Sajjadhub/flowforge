@@ -147,13 +147,20 @@ function renderMeetings(meetings, activeBots) {
 // ── Active Bots Tab ───────────────────────────
 function renderActiveBots(activeBots) {
   const container = document.getElementById("active-bots-list");
-  const active = Object.entries(activeBots).filter(([, b]) => b.status !== "done");
+  const now = Date.now();
+  const active = Object.entries(activeBots).filter(([, b]) => {
+    if (b.status === "done") return false;
+    if (!b.meetingStart) return false;
+    const start = new Date(b.meetingStart).getTime();
+    const hoursSinceStart = (now - start) / 3600000;
+    return hoursSinceStart >= 0 && hoursSinceStart < 24;
+  });
 
   if (!active.length) {
     container.innerHTML = `
       <div class="empty-state">
         <p>No active bots right now</p>
-        <span class="empty-hint">Arm a bot from the Upcoming tab</span>
+        <span class="empty-hint">No meetings in the past 24 hours</span>
       </div>`;
     return;
   }

@@ -177,11 +177,23 @@ async def get_active_bots():
 @app.get("/summaries")
 async def get_summaries():
     summaries = storage.get("meeting_summaries") or {}
-    return {
-        "summaries": dict(
-            sorted(summaries.items(), key=lambda x: x[1].get("processed_at", 0), reverse=True)
-        )
-    }
+    def to_camel(s: dict) -> dict:
+        return {
+            "meetingTitle": s.get("meeting_title", ""),
+            "meetingStart": s.get("meeting_start", ""),
+            "attendees": s.get("attendees", []),
+            "attendance": s.get("attendance", []),
+            "actionItems": s.get("action_items", []),
+            "summary": s.get("summary", ""),
+            "keyDecisions": s.get("key_decisions", []),
+            "topics": s.get("topics", []),
+            "blockers": s.get("blockers", []),
+            "processedAt": s.get("processed_at", 0),
+        }
+    sorted_summaries = dict(
+        sorted(summaries.items(), key=lambda x: x[1].get("processed_at", 0), reverse=True)
+    )
+    return {"summaries": {k: to_camel(v) for k, v in sorted_summaries.items()}}
 
 
 @app.post("/summaries/{meeting_id}/slack")
