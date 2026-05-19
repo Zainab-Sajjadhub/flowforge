@@ -50,7 +50,7 @@ Return a JSON object with EXACTLY this structure:
   "action_items": [
     {{
       "task": "clear description of what needs to be done",
-      "owner": "person's first name if mentioned, otherwise Unassigned",
+      "owner": "comma-separated first names if multiple people are assigned, otherwise Unassigned",
       "deadline": "specific date or timeframe if mentioned, otherwise No deadline set"
     }}
   ],

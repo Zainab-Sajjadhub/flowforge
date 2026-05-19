@@ -301,6 +301,7 @@ class RecallService:
 
         if slack_svc:
             try:
+                await slack_svc.post_attendance(meeting_summaries[meeting_id], meeting_id)
                 await slack_svc.post_summary(meeting_summaries[meeting_id], meeting_id)
                 await slack_svc.post_transcript(meeting_summaries[meeting_id], meeting_id)
             except Exception as e:
