@@ -15,7 +15,7 @@ from pydantic import BaseModel
 
 import config
 from calendar_service import CalendarService
-from gemini_service import GeminiService
+from claude_service import ClaudeService
 from recall_service import RecallService, verify_recall_request
 from slack_service import SlackService
 from storage import Storage
@@ -41,7 +41,7 @@ REQUIRED = {
 storage = Storage()
 calendar_svc = CalendarService(storage)
 recall_svc = RecallService(storage)
-gemini_svc = GeminiService()
+claude_svc = ClaudeService()
 slack_svc = SlackService()
 
 _webhook_queue: asyncio.Queue = asyncio.Queue()
@@ -60,7 +60,7 @@ async def webhook_worker():
             elif event_type == "recording.done":
                 await recall_svc.handle_recording_done(payload)
             elif event_type == "transcript.done":
-                await recall_svc.handle_transcript_done(payload, gemini_svc)
+                await recall_svc.handle_transcript_done(payload, claude_svc, slack_svc)
             elif event_type in ("recording.failed", "transcript.failed"):
                 log.error(f"Recall failure event: {event_type} — {payload}")
 
@@ -158,7 +158,18 @@ async def arm_bot(meeting: MeetingPayload):
 @app.get("/bots/active")
 async def get_active_bots():
     active_bots = storage.get("active_bots") or {}
-    active = {k: v for k, v in active_bots.items() if v.get("status") != "done"}
+    active = {}
+    for k, v in active_bots.items():
+        if v.get("status") != "done":
+            active[k] = {
+                "botId": v.get("bot_id"),
+                "meetingId": v.get("meeting_id"),
+                "meetingTitle": v.get("meeting_title"),
+                "meetingStart": v.get("meeting_start"),
+                "attendees": v.get("attendees", []),
+                "status": v.get("status"),
+                "armedAt": v.get("armed_at"),
+            }
     return {"bots": active}
 
 
@@ -189,6 +200,7 @@ async def recall_webhook(request: Request):
     raw_body = await request.body()
     headers = dict(request.headers)
 
+    log.info(f"Webhook headers: {list(headers.keys())}")
     if not verify_recall_request(raw_body, headers):
         log.warning("Recall webhook verification failed — rejecting")
         return Response(status_code=401)

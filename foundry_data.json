@@ -1,6 +1,6 @@
 {
   "meetings": [],
-  "last_calendar_poll": "2026-05-18T23:13:19.313692+00:00",
+  "last_calendar_poll": "2026-05-19T22:21:20.256024+00:00",
   "active_bots": {
     "20lprqs90bsniu3ejpok65ldcu": {
       "bot_id": "c649d07a-817c-48e5-89c2-9da1f8699a7c",
@@ -19,6 +19,41 @@
       "attendees": [],
       "status": "joining",
       "armed_at": "2026-05-18T22:15:17.915182+00:00"
+    },
+    "5gd5klsp68dce2riia14geckig": {
+      "bot_id": "3655cd78-2758-45ef-9b78-d5a3892b59a0",
+      "meeting_id": "5gd5klsp68dce2riia14geckig",
+      "meeting_title": "test meeting",
+      "meeting_start": "2026-05-19T18:00:00-04:00",
+      "attendees": [],
+      "status": "joining",
+      "armed_at": "2026-05-19T20:31:45.731322+00:00"
+    },
+    "3brbm28sbkvnqfbf6p3v69lc8j": {
+      "bot_id": "c171051f-94b8-43ae-8e5a-895e06bcd33c",
+      "meeting_id": "3brbm28sbkvnqfbf6p3v69lc8j",
+      "meeting_title": "meeting 1",
+      "meeting_start": "2026-05-19T16:45:00-04:00",
+      "attendees": [
+        "rahmanjovita@gmail.com",
+        "zainabsajjadus@gmail.com",
+        "merril.biju@gmail.com"
+      ],
+      "status": "joining",
+      "armed_at": "2026-05-19T20:44:43.863518+00:00"
+    },
+    "66lephj7l0sq6hqc2msnpqblur": {
+      "bot_id": "9df438eb-56f8-4446-ba96-d952aef7be80",
+      "meeting_id": "66lephj7l0sq6hqc2msnpqblur",
+      "meeting_title": "test meeting 2",
+      "meeting_start": "2026-05-19T17:45:00-04:00",
+      "attendees": [
+        "rahmanjovita@gmail.com",
+        "zainabsajjadus@gmail.com",
+        "merill.biju@gmail.com"
+      ],
+      "status": "joining",
+      "armed_at": "2026-05-19T21:40:35.957678+00:00"
     }
   }
 }

@@ -1,6 +1,6 @@
 # ─────────────────────────────────────────────
-#  FOUNDRY — CLAUDE SERVICE (via Anthropic API)
-#  Summarizes transcripts and extracts action items
+#  FOUNDRY — AI SERVICE (via Google Gemini)
+#  Extracts action items from meeting transcripts
 # ─────────────────────────────────────────────
 
 import json
@@ -13,35 +13,28 @@ import config
 
 log = logging.getLogger(__name__)
 
-ANTHROPIC_URL = "https://api.anthropic.com/v1/messages"
-HEADERS = {
-    "x-api-key": config.ANTHROPIC_API_KEY,
-    "anthropic-version": "2023-06-01",
-    "content-type": "application/json",
-}
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
 
-class GeminiService:
+class ClaudeService:
     async def summarize(self, transcript_text: str, bot_record: dict) -> dict:
-        """
-        Send transcript to Claude and return structured summary.
-        Returns dict with: summary, key_decisions, action_items,
-                           topics, attendance, blockers
-        """
         prompt = self._build_prompt(transcript_text, bot_record)
 
         payload = {
-            "model": "claude-sonnet-4-5",
-            "max_tokens": 2048,
-            "messages": [{"role": "user", "content": prompt}],
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"temperature": 0.2},
         }
 
         async with httpx.AsyncClient(timeout=60.0) as client:
-            res = await client.post(ANTHROPIC_URL, headers=HEADERS, json=payload)
+            res = await client.post(
+                GEMINI_URL,
+                params={"key": config.GEMINI_API_KEY},
+                json=payload,
+            )
             res.raise_for_status()
             data = res.json()
 
-        raw = data["content"][0]["text"]
+        raw = data["candidates"][0]["content"]["parts"][0]["text"]
         return self._parse_response(raw)
 
     def _build_prompt(self, transcript_text: str, bot_record: dict) -> str:
@@ -50,21 +43,18 @@ class GeminiService:
 
         return f"""You are an AI assistant helping The Foundry, a student-led nonprofit that supports East Coast startup founders.
 
-Analyze this meeting transcript and return a JSON object with EXACTLY this structure:
+Analyze this meeting transcript and extract ONLY the action items. Assign each to the person who said they would do it, or who it was assigned to. If no one is assigned, use "Unassigned".
+
+Return a JSON object with EXACTLY this structure:
 {{
-  "summary": "2-3 sentence high-level summary of what was discussed and decided",
-  "key_decisions": ["decision 1", "decision 2"],
   "action_items": [
     {{
       "task": "clear description of what needs to be done",
-      "owner": "person's name or email if mentioned, otherwise Unassigned",
-      "deadline": "specific date or timeframe if mentioned, otherwise No deadline set",
-      "priority": "high or medium or low"
+      "owner": "person's first name if mentioned, otherwise Unassigned",
+      "deadline": "specific date or timeframe if mentioned, otherwise No deadline set"
     }}
   ],
-  "topics": ["topic 1", "topic 2"],
-  "attendance": ["name or email of each person who spoke"],
-  "blockers": ["any blocker or risk mentioned"]
+  "attendance": ["first name of each person who spoke"]
 }}
 
 Meeting: {bot_record.get("meeting_title", "Leadership Meeting")}
@@ -81,12 +71,8 @@ Return ONLY valid JSON. No markdown, no code fences, no explanation."""
         try:
             return json.loads(clean)
         except json.JSONDecodeError as e:
-            log.error(f"Claude JSON parse error: {e}\nRaw: {raw[:500]}")
+            log.error(f"Gemini JSON parse error: {e}\nRaw: {raw[:500]}")
             return {
-                "summary": "Could not parse summary.",
-                "key_decisions": [],
                 "action_items": [],
-                "topics": [],
                 "attendance": [],
-                "blockers": [],
             }

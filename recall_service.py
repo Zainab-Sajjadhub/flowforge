@@ -231,7 +231,7 @@ class RecallService:
                 break
         self.storage.set("active_bots", active_bots)
 
-    async def handle_transcript_done(self, payload: dict, gemini_svc):
+    async def handle_transcript_done(self, payload: dict, claude_svc, slack_svc=None):
         """
         Called when transcript.done fires.
         Downloads the transcript and runs Gemini summarization.
@@ -274,7 +274,7 @@ class RecallService:
             bot_record = {"meeting_title": "Unknown Meeting", "meeting_start": "", "attendees": []}
 
         # Run Gemini summarization
-        summary = await gemini_svc.summarize(transcript_text, bot_record)
+        summary = await claude_svc.summarize(transcript_text, bot_record)
 
         # Store summary
         meeting_summaries = self.storage.get("meeting_summaries") or {}
@@ -298,6 +298,13 @@ class RecallService:
             self.storage.set("active_bots", active_bots)
 
         log.info(f"Summary stored for '{bot_record['meeting_title']}' — {len(summary.get('action_items', []))} action items")
+
+        if slack_svc:
+            try:
+                await slack_svc.post_summary(meeting_summaries[meeting_id], meeting_id)
+                await slack_svc.post_transcript(meeting_summaries[meeting_id], meeting_id)
+            except Exception as e:
+                log.error(f"Failed to post to Slack: {e}")
 
     def _format_transcript(self, transcript_data: list) -> str:
         """Convert Recall's JSON transcript format into readable speaker-labelled text."""
