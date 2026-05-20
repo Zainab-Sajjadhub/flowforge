@@ -16,8 +16,18 @@
       "slack_id": "U0B3XNLFK6W"
     }
   ],
-  "meetings": [],
-  "last_calendar_poll": "2026-05-19T23:27:19.255185+00:00",
+  "meetings": [
+    {
+      "id": "322f70aq7v8m21ftc22p59n73c",
+      "title": "test 5",
+      "start": "2026-05-20T10:30:00-04:00",
+      "end": "2026-05-20T11:30:00-04:00",
+      "meet_link": "https://meet.google.com/eej-vbwg-pce",
+      "attendees": [],
+      "organizer": "rahmanjovita@gmail.com"
+    }
+  ],
+  "last_calendar_poll": "2026-05-20T00:15:19.303562+00:00",
   "active_bots": {
     "20lprqs90bsniu3ejpok65ldcu": {
       "bot_id": "c649d07a-817c-48e5-89c2-9da1f8699a7c",
@@ -71,6 +81,15 @@
       ],
       "status": "joining",
       "armed_at": "2026-05-19T21:40:35.957678+00:00"
+    },
+    "322f70aq7v8m21ftc22p59n73c": {
+      "bot_id": "942eb44e-ebfc-4bbe-a8f6-adb582464373",
+      "meeting_id": "322f70aq7v8m21ftc22p59n73c",
+      "meeting_title": "test 5",
+      "meeting_start": "2026-05-20T10:30:00-04:00",
+      "attendees": [],
+      "status": "joining",
+      "armed_at": "2026-05-19T23:56:47.436805+00:00"
     }
   },
   "meeting_summaries": {

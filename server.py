@@ -18,7 +18,7 @@ from calendar_service import CalendarService
 from claude_service import ClaudeService
 from recall_service import RecallService, verify_recall_request
 from slack_service import SlackService
-from storage import Storage
+from storage import Storage 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)

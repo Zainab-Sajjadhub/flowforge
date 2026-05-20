@@ -153,29 +153,37 @@ function renderActiveBots(activeBots) {
     if (!b.meetingStart) return false;
     const start = new Date(b.meetingStart).getTime();
     const hoursSinceStart = (now - start) / 3600000;
-    return hoursSinceStart >= 0 && hoursSinceStart < 24;
+    return hoursSinceStart >= 0 && hoursSinceStart < 72;
   });
 
   if (!active.length) {
     container.innerHTML = `
       <div class="empty-state">
         <p>No active bots right now</p>
-        <span class="empty-hint">No meetings in the past 24 hours</span>
+        <span class="empty-hint">No meetings in the past 72 hours</span>
       </div>`;
     return;
   }
 
   container.innerHTML = "";
   active.forEach(([, bot]) => {
+    const start = new Date(bot.meetingStart).getTime();
+    const hoursSinceStart = (now - start) / 3600000;
+    const callLikelyOver = hoursSinceStart > 2;
+    const stuckStatuses = ["joining", "in_call_not_recording", "unknown"];
+    const effectiveStatus = callLikelyOver && stuckStatuses.includes(bot.status)
+      ? "call_ended"
+      : bot.status;
+
     const statusLabel = {
       joining: "Joining meeting…",
       in_call_not_recording: "In call, waiting to record",
       in_call_recording: "Recording & transcribing",
-      call_ended: "Call ended, processing…",
+      call_ended: "Call ended",
       unknown: "Connecting…",
-    }[bot.status] || bot.status;
+    }[effectiveStatus] || effectiveStatus;
 
-    const isRecording = bot.status === "in_call_recording";
+    const isRecording = effectiveStatus === "in_call_recording";
 
     const card = document.createElement("div");
     card.className = "bot-card";

@@ -14,7 +14,7 @@ Automatically records, transcribes, and extracts action items from Google Meet m
 7. Copy the **Client ID**
 
 ### 2. Recall.ai
-1. Sign up at https://www.recall.ai
+1. Sign up at https://www.recall.ai — select region **us-west-2**
 2. Go to **Dashboard → API Keys** → copy your API key
 3. Go to **Webhooks → Add Endpoint** → set URL to:
    ```
